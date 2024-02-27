@@ -70,7 +70,7 @@ const UpcomingWeather = () => {
     />
   );
   return (
-    <SafeAreaView styles={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text>Upcoming Weather</Text>
       <FlatList
         data={DATA}
