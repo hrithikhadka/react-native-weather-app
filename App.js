@@ -9,9 +9,25 @@ import { WEATHER_API_KEY } from "@env";
 
 const App = () => {
   const [loading, setLoading] = useState(true);
-  const [location, setLocation] = useState(null);
   const [error, setError] = useState(null);
-  console.log(TEST_KEY);
+  const [weather, setWeather] = useState([]);
+  const [lat, setLat] = useState([]);
+  const [lon, setLon] = useState([]);
+
+  const fetchWeatherData = async () => {
+    try {
+      const response = await fetch(
+        `http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${WEATHER_API_KEY}`
+      );
+      const data = await response.json();
+      setWeather(data);
+      setLoading(false);
+    } catch (error) {
+      setError("could not fetch weather");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     (async () => {
@@ -21,12 +37,15 @@ const App = () => {
         return;
       }
       let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
+      setLat(location.coords.latitude);
+      setLon(location.coords.longitude);
+      await fetchWeatherData();
     })();
-  }, []);
-  if (location) {
-    console.log(location);
+  }, [lat, lon]);
+  if (weather) {
+    console.log(weather);
   }
+
   if (loading) {
     return (
       <View style={styles.container}>
